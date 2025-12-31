@@ -464,7 +464,7 @@
                     { id: 'across_flats', label: 'Across Flats (AF)', placeholder: '25' },
                     { id: 'length', label: 'Length (L)', placeholder: '1000' }
                 ],
-                area: (d) => (3 * Math.sqrt(3) / 2) * Math.pow(d.across_flats / 2, 2)
+                area: (d) => (Math.sqrt(3) / 2) * Math.pow(d.across_flats, 2)
             },
             'round-pipe': {
                 name: 'Round Pipe',
