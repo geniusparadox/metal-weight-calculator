@@ -1,10 +1,10 @@
-const CACHE_NAME = 'metal-weight-calc-v1';
+const CACHE_NAME = 'metal-weight-calc-v2';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 // Install event
@@ -48,7 +48,7 @@ self.addEventListener('fetch', (event) => {
       })
       .catch(() => {
         // Offline fallback
-        return caches.match('/index.html');
+        return caches.match('./index.html');
       })
   );
 });
