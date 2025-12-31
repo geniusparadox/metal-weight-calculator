@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Metal Weight">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Metal Weight Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #1f2937;
+            --bg-input: #374151;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #10b981;
+            --border: #4b5563;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: max(20px, env(safe-area-inset-top));
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            padding-right: 44px;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .input-row.three {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .profile-btn {
+            aspect-ratio: 1;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            transition: all 0.2s;
+        }
+
+        .profile-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .profile-btn.active {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .profile-btn svg {
+            width: 32px;
+            height: 32px;
+            stroke: var(--text-primary);
+            fill: none;
+            stroke-width: 2;
+            margin-bottom: 4px;
+        }
+
+        .profile-btn span {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%);
+            text-align: center;
+            padding: 24px;
+        }
+
+        .result-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .result-unit {
+            font-size: 18px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .result-details {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .result-details div {
+            text-align: center;
+        }
+
+        .result-details .label {
+            opacity: 0.8;
+            font-size: 12px;
+        }
+
+        .result-details .value {
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .dimensions-diagram {
+            background: var(--bg-input);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dimensions-diagram svg {
+            width: 120px;
+            height: 100px;
+            stroke: var(--accent);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .dimensions-diagram text {
+            fill: var(--text-secondary);
+            font-size: 10px;
+        }
+
+        .install-banner {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .install-banner.show {
+            display: flex;
+        }
+
+        .install-banner p {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .install-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .install-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ Metal Weight Calculator</h1>
+            <p>Calculate weight of metal profiles</p>
+        </header>
+
+        <div class="install-banner" id="installBanner">
+            <p>Install this app on your device</p>
+            <button class="install-btn" id="installBtn">Install</button>
+            <button class="close-btn" id="closeBanner">×</button>
+        </div>
+
+        <!-- Profile Selection -->
+        <div class="card">
+            <div class="card-title">Select Profile Shape</div>
+            <div class="profile-grid">
+                <button class="profile-btn active" data-profile="round-bar" title="Round Bar">
+                    <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="12"/></svg>
+                    <span>Round</span>
+                </button>
+                <button class="profile-btn" data-profile="square-bar" title="Square Bar">
+                    <svg viewBox="0 0 40 40"><rect x="8" y="8" width="24" height="24"/></svg>
+                    <span>Square</span>
+                </button>
+                <button class="profile-btn" data-profile="flat-bar" title="Flat Bar">
+                    <svg viewBox="0 0 40 40"><rect x="5" y="14" width="30" height="12"/></svg>
+                    <span>Flat</span>
+                </button>
+                <button class="profile-btn" data-profile="hex-bar" title="Hexagonal Bar">
+                    <svg viewBox="0 0 40 40"><polygon points="20,6 32,13 32,27 20,34 8,27 8,13"/></svg>
+                    <span>Hex</span>
+                </button>
+                <button class="profile-btn" data-profile="round-pipe" title="Round Pipe">
+                    <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14"/><circle cx="20" cy="20" r="8"/></svg>
+                    <span>Pipe</span>
+                </button>
+                <button class="profile-btn" data-profile="square-pipe" title="Square Pipe">
+                    <svg viewBox="0 0 40 40"><rect x="6" y="6" width="28" height="28"/><rect x="12" y="12" width="16" height="16"/></svg>
+                    <span>Sq Pipe</span>
+                </button>
+                <button class="profile-btn" data-profile="rect-pipe" title="Rectangular Pipe">
+                    <svg viewBox="0 0 40 40"><rect x="4" y="10" width="32" height="20"/><rect x="10" y="15" width="20" height="10"/></svg>
+                    <span>Rect Pipe</span>
+                </button>
+                <button class="profile-btn" data-profile="angle" title="Angle Iron">
+                    <svg viewBox="0 0 40 40"><path d="M8,8 L8,32 L32,32 L32,26 L14,26 L14,8 Z"/></svg>
+                    <span>Angle</span>
+                </button>
+                <button class="profile-btn" data-profile="channel" title="Channel">
+                    <svg viewBox="0 0 40 40"><path d="M10,6 L10,34 L30,34 L30,28 L16,28 L16,12 L30,12 L30,6 Z"/></svg>
+                    <span>Channel</span>
+                </button>
+                <button class="profile-btn" data-profile="i-beam" title="I-Beam">
+                    <svg viewBox="0 0 40 40"><path d="M8,6 L32,6 L32,10 L24,10 L24,30 L32,30 L32,34 L8,34 L8,30 L16,30 L16,10 L8,10 Z"/></svg>
+                    <span>I-Beam</span>
+                </button>
+                <button class="profile-btn" data-profile="t-bar" title="T-Bar">
+                    <svg viewBox="0 0 40 40"><path d="M8,8 L32,8 L32,14 L24,14 L24,34 L16,34 L16,14 L8,14 Z"/></svg>
+                    <span>T-Bar</span>
+                </button>
+                <button class="profile-btn" data-profile="sheet" title="Sheet/Plate">
+                    <svg viewBox="0 0 40 40"><rect x="4" y="16" width="32" height="8"/></svg>
+                    <span>Sheet</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Material Selection -->
+        <div class="card">
+            <div class="card-title">Material</div>
+            <div class="form-group">
+                <select id="material">
+                    <optgroup label="Steel">
+                        <option value="7850" selected>Carbon Steel (7850 kg/m³)</option>
+                        <option value="7480">Cast Iron (7480 kg/m³)</option>
+                        <option value="7930">Stainless Steel 304 (7930 kg/m³)</option>
+                        <option value="8000">Stainless Steel 316 (8000 kg/m³)</option>
+                        <option value="7870">Tool Steel (7870 kg/m³)</option>
+                    </optgroup>
+                    <optgroup label="Aluminum">
+                        <option value="2700">Aluminum (Pure) (2700 kg/m³)</option>
+                        <option value="2810">Aluminum 6061 (2810 kg/m³)</option>
+                        <option value="2780">Aluminum 7075 (2780 kg/m³)</option>
+                    </optgroup>
+                    <optgroup label="Copper & Alloys">
+                        <option value="8960">Copper (8960 kg/m³)</option>
+                        <option value="8530">Brass (8530 kg/m³)</option>
+                        <option value="8800">Bronze (8800 kg/m³)</option>
+                        <option value="8940">Phosphor Bronze (8940 kg/m³)</option>
+                    </optgroup>
+                    <optgroup label="Other Metals">
+                        <option value="4510">Titanium (4510 kg/m³)</option>
+                        <option value="7140">Zinc (7140 kg/m³)</option>
+                        <option value="11340">Lead (11340 kg/m³)</option>
+                        <option value="8900">Nickel (8900 kg/m³)</option>
+                        <option value="8400">Nickel Silver (8400 kg/m³)</option>
+                        <option value="19300">Gold (19300 kg/m³)</option>
+                        <option value="10500">Silver (10500 kg/m³)</option>
+                        <option value="21450">Platinum (21450 kg/m³)</option>
+                        <option value="1740">Magnesium (1740 kg/m³)</option>
+                    </optgroup>
+                    <optgroup label="Custom">
+                        <option value="custom">Custom density...</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group" id="customDensityGroup" style="display: none;">
+                <label>Custom Density (kg/m³)</label>
+                <input type="number" id="customDensity" placeholder="e.g., 7850" step="1">
+            </div>
+        </div>
+
+        <!-- Dimensions -->
+        <div class="card">
+            <div class="card-title">Dimensions (mm)</div>
+            <div id="dimensionsForm">
+                <!-- Dynamic content based on profile -->
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div class="card result-card">
+            <div class="result-label">Total Weight</div>
+            <div class="result-value"><span id="resultWeight">0.00</span> <span class="result-unit" id="resultUnit">kg</span></div>
+            <div class="result-details">
+                <div>
+                    <div class="label">Per Meter</div>
+                    <div class="value" id="weightPerMeter">0.00 kg/m</div>
+                </div>
+                <div>
+                    <div class="label">Volume</div>
+                    <div class="value" id="volume">0.00 cm³</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Material densities in kg/m³
+        const profiles = {
+            'round-bar': {
+                name: 'Round Bar',
+                fields: [
+                    { id: 'diameter', label: 'Diameter (D)', placeholder: '25' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => Math.PI * Math.pow(d.diameter / 2, 2)
+            },
+            'square-bar': {
+                name: 'Square Bar',
+                fields: [
+                    { id: 'side', label: 'Side (A)', placeholder: '25' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => Math.pow(d.side, 2)
+            },
+            'flat-bar': {
+                name: 'Flat Bar',
+                fields: [
+                    { id: 'width', label: 'Width (W)', placeholder: '50' },
+                    { id: 'thickness', label: 'Thickness (T)', placeholder: '5' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => d.width * d.thickness
+            },
+            'hex-bar': {
+                name: 'Hexagonal Bar',
+                fields: [
+                    { id: 'across_flats', label: 'Across Flats (AF)', placeholder: '25' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => (3 * Math.sqrt(3) / 2) * Math.pow(d.across_flats / 2, 2)
+            },
+            'round-pipe': {
+                name: 'Round Pipe',
+                fields: [
+                    { id: 'outer_diameter', label: 'Outer Dia (OD)', placeholder: '50' },
+                    { id: 'wall_thickness', label: 'Wall Thickness (T)', placeholder: '3' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => {
+                    const outerR = d.outer_diameter / 2;
+                    const innerR = outerR - d.wall_thickness;
+                    return Math.PI * (Math.pow(outerR, 2) - Math.pow(innerR, 2));
+                }
+            },
+            'square-pipe': {
+                name: 'Square Pipe',
+                fields: [
+                    { id: 'outer_side', label: 'Outer Side (A)', placeholder: '50' },
+                    { id: 'wall_thickness', label: 'Wall Thickness (T)', placeholder: '3' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => {
+                    const innerSide = d.outer_side - 2 * d.wall_thickness;
+                    return Math.pow(d.outer_side, 2) - Math.pow(innerSide, 2);
+                }
+            },
+            'rect-pipe': {
+                name: 'Rectangular Pipe',
+                fields: [
+                    { id: 'outer_width', label: 'Outer Width (W)', placeholder: '60' },
+                    { id: 'outer_height', label: 'Outer Height (H)', placeholder: '40' },
+                    { id: 'wall_thickness', label: 'Wall Thickness (T)', placeholder: '3' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => {
+                    const innerW = d.outer_width - 2 * d.wall_thickness;
+                    const innerH = d.outer_height - 2 * d.wall_thickness;
+                    return (d.outer_width * d.outer_height) - (innerW * innerH);
+                }
+            },
+            'angle': {
+                name: 'Angle Iron',
+                fields: [
+                    { id: 'leg_a', label: 'Leg A', placeholder: '50' },
+                    { id: 'leg_b', label: 'Leg B', placeholder: '50' },
+                    { id: 'thickness', label: 'Thickness (T)', placeholder: '5' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => (d.leg_a + d.leg_b - d.thickness) * d.thickness
+            },
+            'channel': {
+                name: 'Channel (C)',
+                fields: [
+                    { id: 'height', label: 'Height (H)', placeholder: '100' },
+                    { id: 'flange_width', label: 'Flange Width (B)', placeholder: '50' },
+                    { id: 'web_thickness', label: 'Web Thickness (tw)', placeholder: '5' },
+                    { id: 'flange_thickness', label: 'Flange Thickness (tf)', placeholder: '8' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => {
+                    const webArea = (d.height - 2 * d.flange_thickness) * d.web_thickness;
+                    const flangeArea = 2 * d.flange_width * d.flange_thickness;
+                    return webArea + flangeArea;
+                }
+            },
+            'i-beam': {
+                name: 'I-Beam / H-Beam',
+                fields: [
+                    { id: 'height', label: 'Height (H)', placeholder: '200' },
+                    { id: 'flange_width', label: 'Flange Width (B)', placeholder: '100' },
+                    { id: 'web_thickness', label: 'Web Thickness (tw)', placeholder: '6' },
+                    { id: 'flange_thickness', label: 'Flange Thickness (tf)', placeholder: '10' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => {
+                    const webArea = (d.height - 2 * d.flange_thickness) * d.web_thickness;
+                    const flangeArea = 2 * d.flange_width * d.flange_thickness;
+                    return webArea + flangeArea;
+                }
+            },
+            't-bar': {
+                name: 'T-Bar',
+                fields: [
+                    { id: 'flange_width', label: 'Flange Width (B)', placeholder: '100' },
+                    { id: 'height', label: 'Height (H)', placeholder: '100' },
+                    { id: 'flange_thickness', label: 'Flange Thickness (tf)', placeholder: '10' },
+                    { id: 'web_thickness', label: 'Web Thickness (tw)', placeholder: '10' },
+                    { id: 'length', label: 'Length (L)', placeholder: '1000' }
+                ],
+                area: (d) => {
+                    const flangeArea = d.flange_width * d.flange_thickness;
+                    const webArea = (d.height - d.flange_thickness) * d.web_thickness;
+                    return flangeArea + webArea;
+                }
+            },
+            'sheet': {
+                name: 'Sheet / Plate',
+                fields: [
+                    { id: 'width', label: 'Width (W)', placeholder: '1000' },
+                    { id: 'thickness', label: 'Thickness (T)', placeholder: '2' },
+                    { id: 'length', label: 'Length (L)', placeholder: '2000' }
+                ],
+                area: (d) => d.width * d.thickness
+            }
+        };
+
+        let currentProfile = 'round-bar';
+        let currentDimensions = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupProfileButtons();
+            setupMaterialSelect();
+            renderDimensionsForm();
+            calculate();
+            registerServiceWorker();
+            setupInstallPrompt();
+        });
+
+        function setupProfileButtons() {
+            document.querySelectorAll('.profile-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentProfile = btn.dataset.profile;
+                    renderDimensionsForm();
+                    calculate();
+                });
+            });
+        }
+
+        function setupMaterialSelect() {
+            const materialSelect = document.getElementById('material');
+            const customGroup = document.getElementById('customDensityGroup');
+
+            materialSelect.addEventListener('change', () => {
+                if (materialSelect.value === 'custom') {
+                    customGroup.style.display = 'block';
+                } else {
+                    customGroup.style.display = 'none';
+                }
+                calculate();
+            });
+
+            document.getElementById('customDensity').addEventListener('input', calculate);
+        }
+
+        function renderDimensionsForm() {
+            const form = document.getElementById('dimensionsForm');
+            const profile = profiles[currentProfile];
+
+            let html = '';
+            const fields = profile.fields;
+
+            // Group fields in rows of 2
+            for (let i = 0; i < fields.length; i += 2) {
+                const isLast = i + 1 >= fields.length;
+                const field1 = fields[i];
+                const field2 = fields[i + 1];
+
+                if (field2) {
+                    html += `<div class="input-row">`;
+                    html += renderField(field1);
+                    html += renderField(field2);
+                    html += `</div>`;
+                } else {
+                    html += `<div class="form-group">${renderFieldInner(field1)}</div>`;
+                }
+            }
+
+            form.innerHTML = html;
+
+            // Add event listeners
+            profile.fields.forEach(field => {
+                const input = document.getElementById(field.id);
+                input.addEventListener('input', calculate);
+                // Restore previous value if exists
+                if (currentDimensions[field.id]) {
+                    input.value = currentDimensions[field.id];
+                }
+            });
+        }
+
+        function renderField(field) {
+            return `<div class="form-group">${renderFieldInner(field)}</div>`;
+        }
+
+        function renderFieldInner(field) {
+            return `
+                <label for="${field.id}">${field.label}</label>
+                <input type="number" id="${field.id}" placeholder="${field.placeholder}" step="0.01" min="0">
+            `;
+        }
+
+        function calculate() {
+            const profile = profiles[currentProfile];
+            const dimensions = {};
+            let allFilled = true;
+
+            profile.fields.forEach(field => {
+                const value = parseFloat(document.getElementById(field.id)?.value);
+                if (isNaN(value) || value <= 0) {
+                    allFilled = false;
+                } else {
+                    dimensions[field.id] = value;
+                    currentDimensions[field.id] = value;
+                }
+            });
+
+            if (!allFilled) {
+                updateResult(0, 0, 0);
+                return;
+            }
+
+            // Get density
+            const materialSelect = document.getElementById('material');
+            let density;
+            if (materialSelect.value === 'custom') {
+                density = parseFloat(document.getElementById('customDensity').value);
+                if (isNaN(density) || density <= 0) {
+                    updateResult(0, 0, 0);
+                    return;
+                }
+            } else {
+                density = parseFloat(materialSelect.value);
+            }
+
+            // Calculate cross-sectional area in mm²
+            const area = profile.area(dimensions);
+
+            // Get length in mm
+            const length = dimensions.length;
+
+            // Calculate volume in mm³
+            const volumeMm3 = area * length;
+
+            // Convert to m³ for weight calculation
+            const volumeM3 = volumeMm3 / 1e9;
+
+            // Calculate weight in kg
+            const weight = volumeM3 * density;
+
+            // Weight per meter
+            const areaM2 = area / 1e6;
+            const weightPerMeter = areaM2 * density;
+
+            // Volume in cm³
+            const volumeCm3 = volumeMm3 / 1000;
+
+            updateResult(weight, weightPerMeter, volumeCm3);
+        }
+
+        function updateResult(weight, weightPerMeter, volumeCm3) {
+            const resultWeight = document.getElementById('resultWeight');
+            const resultUnit = document.getElementById('resultUnit');
+            const weightPerMeterEl = document.getElementById('weightPerMeter');
+            const volumeEl = document.getElementById('volume');
+
+            // Auto-adjust units
+            if (weight >= 1000) {
+                resultWeight.textContent = (weight / 1000).toFixed(2);
+                resultUnit.textContent = 't';
+            } else if (weight >= 1) {
+                resultWeight.textContent = weight.toFixed(2);
+                resultUnit.textContent = 'kg';
+            } else {
+                resultWeight.textContent = (weight * 1000).toFixed(1);
+                resultUnit.textContent = 'g';
+            }
+
+            weightPerMeterEl.textContent = weightPerMeter.toFixed(3) + ' kg/m';
+
+            if (volumeCm3 >= 1000) {
+                volumeEl.textContent = (volumeCm3 / 1000).toFixed(2) + ' dm³';
+            } else {
+                volumeEl.textContent = volumeCm3.toFixed(2) + ' cm³';
+            }
+        }
+
+        // PWA Install
+        let deferredPrompt;
+
+        function setupInstallPrompt() {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                document.getElementById('installBanner').classList.add('show');
+            });
+
+            document.getElementById('installBtn').addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const result = await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                    document.getElementById('installBanner').classList.remove('show');
+                }
+            });
+
+            document.getElementById('closeBanner').addEventListener('click', () => {
+                document.getElementById('installBanner').classList.remove('show');
+            });
+        }
+
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            }
+        }
+    </script>
+</body>
+</html>
