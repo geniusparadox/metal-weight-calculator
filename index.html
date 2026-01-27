@@ -40,19 +40,19 @@
         }
 
         .container {
-            max-width: 500px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 12px;
-            padding-top: calc(65px + env(safe-area-inset-top));
+            padding-top: calc(20px + env(safe-area-inset-top));
         }
 
         header {
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         header h1 {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 600;
             margin-bottom: 2px;
         }
@@ -60,6 +60,48 @@
         header p {
             color: var(--text-secondary);
             font-size: 12px;
+        }
+
+        .calculators-wrapper {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .calculator-column {
+            min-width: 0;
+        }
+
+        .calculator-column h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 1100px) {
+            .calculators-wrapper {
+                grid-template-columns: 1fr 1fr;
+            }
+            .calculator-column:first-child {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .calculators-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .calculator-column:first-child {
+                grid-column: span 1;
+            }
+            .container {
+                max-width: 500px;
+            }
         }
 
         .card {
@@ -292,13 +334,157 @@
             cursor: pointer;
             padding: 4px;
         }
+
+        /* A/F to A/C Calculator Styles */
+        .shape-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .shape-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .shape-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .shape-btn.active {
+            border-color: var(--accent);
+            background: rgba(122, 145, 141, 0.1);
+        }
+
+        .shape-btn svg {
+            flex-shrink: 0;
+        }
+
+        .af-ac-result {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .af-ac-diagram {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .af-ac-diagram svg {
+            width: 140px;
+            height: 120px;
+        }
+
+        .af-ac-values {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .af-ac-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border-radius: 8px;
+        }
+
+        .af-ac-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .af-ac-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Thread Reference Styles */
+        .thread-info {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .thread-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .thread-item {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .thread-item.highlight {
+            background: rgba(122, 145, 141, 0.15);
+            border: 1px solid var(--accent);
+        }
+
+        .thread-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .thread-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .thread-item.highlight .thread-value {
+            color: var(--accent);
+        }
+
+        /* Input with unit suffix */
+        .input-with-unit {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-unit input {
+            flex: 1;
+            padding-right: 45px;
+        }
+
+        .input-unit {
+            position: absolute;
+            right: 12px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>⚖️ Metal Weight Calculator</h1>
-            <p>Calculate weight of metal profiles</p>
+            <h1>Metal Tools</h1>
+            <p>Weight calculator & dimension converters</p>
         </header>
 
         <div class="install-banner" id="installBanner">
@@ -306,6 +492,11 @@
             <button class="install-btn" id="installBtn">Install</button>
             <button class="close-btn" id="closeBanner">×</button>
         </div>
+
+        <div class="calculators-wrapper">
+            <!-- Left Column: Metal Weight Calculator -->
+            <div class="calculator-column">
+                <h2>⚖️ Weight Calculator</h2>
 
         <!-- Profile Selection -->
         <div class="card">
@@ -429,6 +620,113 @@
                     <div class="value" id="volume">0.00 cm³</div>
                 </div>
             </div>
+        </div>
+            </div>
+
+            <!-- Right Column: A/F to A/C Calculator -->
+            <div class="calculator-column">
+                <h2>📐 A/F to A/C Converter</h2>
+
+        <!-- A/F to A/C Calculator -->
+        <div class="card">
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+                Convert Across Flats to Across Corners for hex & square stock
+            </p>
+
+            <div class="form-group">
+                <label>Shape</label>
+                <div class="shape-toggle">
+                    <button class="shape-btn active" data-shape="hex" id="shapeHex">
+                        <svg viewBox="0 0 40 40" width="24" height="24"><polygon points="20,6 32,13 32,27 20,34 8,27 8,13" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                        Hexagon
+                    </button>
+                    <button class="shape-btn" data-shape="square" id="shapeSquare">
+                        <svg viewBox="0 0 40 40" width="24" height="24"><rect x="8" y="8" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                        Square
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="afInput">Across Flats (A/F)</label>
+                <div class="input-with-unit">
+                    <input type="number" id="afInput" placeholder="e.g., 19" step="0.001" min="0">
+                    <span class="input-unit">mm</span>
+                </div>
+            </div>
+
+            <div class="af-ac-result">
+                <div class="af-ac-diagram" id="afAcDiagram">
+                    <!-- SVG diagram will be inserted here -->
+                </div>
+                <div class="af-ac-values">
+                    <div class="af-ac-row">
+                        <span class="af-ac-label">Across Corners (A/C)</span>
+                        <span class="af-ac-value" id="acResult">—</span>
+                    </div>
+                    <div class="af-ac-row">
+                        <span class="af-ac-label">Cross-sectional Area</span>
+                        <span class="af-ac-value" id="acArea">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+            <!-- Third Column: Thread Reference -->
+            <div class="calculator-column">
+                <h2>🔩 Thread Reference</h2>
+
+        <div class="card">
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+                Tap drill sizes, dimensions & pitch information
+            </p>
+
+            <div class="form-group">
+                <label>Thread Type</label>
+                <div class="shape-toggle">
+                    <button class="shape-btn active" id="threadMetric">Metric</button>
+                    <button class="shape-btn" id="threadImperial">Imperial</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="threadSize">Select Thread Size</label>
+                <select id="threadSize">
+                    <!-- Options populated by JavaScript -->
+                </select>
+            </div>
+
+            <div class="thread-info" id="threadInfo">
+                <div class="thread-grid">
+                    <div class="thread-item">
+                        <span class="thread-label">Major Ø</span>
+                        <span class="thread-value" id="threadMajor">—</span>
+                    </div>
+                    <div class="thread-item">
+                        <span class="thread-label">Minor Ø</span>
+                        <span class="thread-value" id="threadMinor">—</span>
+                    </div>
+                    <div class="thread-item">
+                        <span class="thread-label">Pitch</span>
+                        <span class="thread-value" id="threadPitch">—</span>
+                    </div>
+                    <div class="thread-item">
+                        <span class="thread-label">TPI</span>
+                        <span class="thread-value" id="threadTPI">—</span>
+                    </div>
+                    <div class="thread-item highlight">
+                        <span class="thread-label">Tap Drill</span>
+                        <span class="thread-value" id="threadTapDrill">—</span>
+                    </div>
+                    <div class="thread-item">
+                        <span class="thread-label">Clearance Drill</span>
+                        <span class="thread-value" id="threadClearance">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
         </div>
     </div>
 
@@ -777,6 +1075,325 @@
                     .catch(err => console.log('Service Worker registration failed:', err));
             }
         }
+
+        // A/F to A/C Calculator
+        let currentShape = 'hex';
+
+        function initAfAcCalculator() {
+            const hexBtn = document.getElementById('shapeHex');
+            const squareBtn = document.getElementById('shapeSquare');
+            const afInput = document.getElementById('afInput');
+
+            hexBtn.addEventListener('click', () => {
+                currentShape = 'hex';
+                hexBtn.classList.add('active');
+                squareBtn.classList.remove('active');
+                updateAfAcDiagram();
+                calculateAfAc();
+            });
+
+            squareBtn.addEventListener('click', () => {
+                currentShape = 'square';
+                squareBtn.classList.add('active');
+                hexBtn.classList.remove('active');
+                updateAfAcDiagram();
+                calculateAfAc();
+            });
+
+            afInput.addEventListener('input', calculateAfAc);
+
+            updateAfAcDiagram();
+        }
+
+        function updateAfAcDiagram() {
+            const container = document.getElementById('afAcDiagram');
+            const af = document.getElementById('afInput').value || '?';
+
+            if (currentShape === 'hex') {
+                container.innerHTML = `
+                    <svg viewBox="0 0 140 120">
+                        <!-- Hexagon -->
+                        <polygon points="70,10 115,32.5 115,77.5 70,100 25,77.5 25,32.5"
+                                 fill="rgba(122,145,141,0.1)" stroke="var(--accent)" stroke-width="2"/>
+
+                        <!-- A/F line (horizontal) -->
+                        <line x1="25" y1="55" x2="115" y2="55" stroke="var(--text-primary)" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <text x="70" y="52" text-anchor="middle" fill="var(--text-secondary)" font-size="10">A/F</text>
+
+                        <!-- A/C line (diagonal) -->
+                        <line x1="70" y1="10" x2="70" y2="100" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <text x="80" y="58" fill="#e74c3c" font-size="10">A/C</text>
+                    </svg>
+                `;
+            } else {
+                container.innerHTML = `
+                    <svg viewBox="0 0 140 120">
+                        <!-- Square -->
+                        <rect x="30" y="20" width="80" height="80"
+                              fill="rgba(122,145,141,0.1)" stroke="var(--accent)" stroke-width="2"/>
+
+                        <!-- A/F line (horizontal) -->
+                        <line x1="30" y1="60" x2="110" y2="60" stroke="var(--text-primary)" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <text x="70" y="55" text-anchor="middle" fill="var(--text-secondary)" font-size="10">A/F</text>
+
+                        <!-- A/C line (diagonal) -->
+                        <line x1="30" y1="20" x2="110" y2="100" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <text x="80" y="45" fill="#e74c3c" font-size="10">A/C</text>
+                    </svg>
+                `;
+            }
+        }
+
+        function calculateAfAc() {
+            const afInput = document.getElementById('afInput');
+            const acResult = document.getElementById('acResult');
+            const acArea = document.getElementById('acArea');
+
+            const af = parseFloat(afInput.value);
+
+            if (isNaN(af) || af <= 0) {
+                acResult.textContent = '—';
+                acArea.textContent = '—';
+                return;
+            }
+
+            let ac, area;
+
+            if (currentShape === 'hex') {
+                // Hexagon: A/C = A/F / cos(30°) = A/F × 1.1547
+                ac = af / Math.cos(Math.PI / 6);
+                // Area = (3 × √3 / 2) × (A/F / 2)² × 2 = (3 × √3 / 2) × (A/F)² / 2
+                // Simplified: Area = (√3 / 2) × A/F² × 1.5 = 0.866 × A/F² × 1.5
+                // Actually: Area of regular hexagon with A/F = 6 × (A/F/2 × A/F/2 × tan(30°)) / 2
+                // = (3 × √3 / 2) × (A/F/√3)² = (√3 / 2) × A/F² × (3/3) ...
+                // Let me use the correct formula: Area = (√3/2) × A/F²  × 3/2 = 0.866 × 1.5 × A/F²
+                // For hex with flat-to-flat = af: Area = (3√3/2) × (af/(√3))² = (3√3/2) × (af²/3) = (√3/2) × af²
+                area = (Math.sqrt(3) / 2) * Math.pow(af, 2);
+            } else {
+                // Square: A/C = A/F × √2
+                ac = af * Math.SQRT2;
+                // Area = A/F²
+                area = Math.pow(af, 2);
+            }
+
+            acResult.textContent = ac.toFixed(4);
+            acArea.textContent = area.toFixed(4) + ' mm²';
+        }
+
+        // Initialize A/F to A/C calculator on load
+        document.addEventListener('DOMContentLoaded', initAfAcCalculator);
+
+        // Thread Reference Data - Coarse and Fine pitches
+        const metricThreads = {
+            // M1.6
+            'M1.6×0.35 (coarse)': { major: 1.6, minor: 1.17, pitch: 0.35, tapDrill: '1.25', clearance: '1.8' },
+            'M1.6×0.2 (fine)': { major: 1.6, minor: 1.35, pitch: 0.20, tapDrill: '1.4', clearance: '1.8' },
+            // M2
+            'M2×0.4 (coarse)': { major: 2.0, minor: 1.57, pitch: 0.40, tapDrill: '1.6', clearance: '2.4' },
+            'M2×0.25 (fine)': { major: 2.0, minor: 1.73, pitch: 0.25, tapDrill: '1.75', clearance: '2.4' },
+            // M2.5
+            'M2.5×0.45 (coarse)': { major: 2.5, minor: 2.01, pitch: 0.45, tapDrill: '2.05', clearance: '2.9' },
+            'M2.5×0.35 (fine)': { major: 2.5, minor: 2.12, pitch: 0.35, tapDrill: '2.15', clearance: '2.9' },
+            // M3
+            'M3×0.5 (coarse)': { major: 3.0, minor: 2.39, pitch: 0.50, tapDrill: '2.5', clearance: '3.4' },
+            'M3×0.35 (fine)': { major: 3.0, minor: 2.62, pitch: 0.35, tapDrill: '2.65', clearance: '3.4' },
+            // M4
+            'M4×0.7 (coarse)': { major: 4.0, minor: 3.24, pitch: 0.70, tapDrill: '3.3', clearance: '4.5' },
+            'M4×0.5 (fine)': { major: 4.0, minor: 3.46, pitch: 0.50, tapDrill: '3.5', clearance: '4.5' },
+            // M5
+            'M5×0.8 (coarse)': { major: 5.0, minor: 4.13, pitch: 0.80, tapDrill: '4.2', clearance: '5.5' },
+            'M5×0.5 (fine)': { major: 5.0, minor: 4.46, pitch: 0.50, tapDrill: '4.5', clearance: '5.5' },
+            // M6
+            'M6×1 (coarse)': { major: 6.0, minor: 4.92, pitch: 1.00, tapDrill: '5.0', clearance: '6.6' },
+            'M6×0.75 (fine)': { major: 6.0, minor: 5.19, pitch: 0.75, tapDrill: '5.25', clearance: '6.6' },
+            // M8
+            'M8×1.25 (coarse)': { major: 8.0, minor: 6.65, pitch: 1.25, tapDrill: '6.8', clearance: '9.0' },
+            'M8×1 (fine)': { major: 8.0, minor: 6.92, pitch: 1.00, tapDrill: '7.0', clearance: '9.0' },
+            // M10
+            'M10×1.5 (coarse)': { major: 10.0, minor: 8.38, pitch: 1.50, tapDrill: '8.5', clearance: '11.0' },
+            'M10×1.25 (fine)': { major: 10.0, minor: 8.65, pitch: 1.25, tapDrill: '8.75', clearance: '11.0' },
+            // M12
+            'M12×1.75 (coarse)': { major: 12.0, minor: 10.11, pitch: 1.75, tapDrill: '10.2', clearance: '13.5' },
+            'M12×1.5 (fine)': { major: 12.0, minor: 10.38, pitch: 1.50, tapDrill: '10.5', clearance: '13.5' },
+            // M14
+            'M14×2 (coarse)': { major: 14.0, minor: 11.84, pitch: 2.00, tapDrill: '12.0', clearance: '15.5' },
+            'M14×1.5 (fine)': { major: 14.0, minor: 12.38, pitch: 1.50, tapDrill: '12.5', clearance: '15.5' },
+            // M16
+            'M16×2 (coarse)': { major: 16.0, minor: 13.84, pitch: 2.00, tapDrill: '14.0', clearance: '17.5' },
+            'M16×1.5 (fine)': { major: 16.0, minor: 14.38, pitch: 1.50, tapDrill: '14.5', clearance: '17.5' },
+            // M18
+            'M18×2.5 (coarse)': { major: 18.0, minor: 15.29, pitch: 2.50, tapDrill: '15.5', clearance: '20.0' },
+            'M18×1.5 (fine)': { major: 18.0, minor: 16.38, pitch: 1.50, tapDrill: '16.5', clearance: '20.0' },
+            // M20
+            'M20×2.5 (coarse)': { major: 20.0, minor: 17.29, pitch: 2.50, tapDrill: '17.5', clearance: '22.0' },
+            'M20×1.5 (fine)': { major: 20.0, minor: 18.38, pitch: 1.50, tapDrill: '18.5', clearance: '22.0' },
+            // M22
+            'M22×2.5 (coarse)': { major: 22.0, minor: 19.29, pitch: 2.50, tapDrill: '19.5', clearance: '24.0' },
+            'M22×1.5 (fine)': { major: 22.0, minor: 20.38, pitch: 1.50, tapDrill: '20.5', clearance: '24.0' },
+            // M24
+            'M24×3 (coarse)': { major: 24.0, minor: 20.75, pitch: 3.00, tapDrill: '21.0', clearance: '26.0' },
+            'M24×2 (fine)': { major: 24.0, minor: 21.84, pitch: 2.00, tapDrill: '22.0', clearance: '26.0' },
+            // M27
+            'M27×3 (coarse)': { major: 27.0, minor: 23.75, pitch: 3.00, tapDrill: '24.0', clearance: '30.0' },
+            'M27×2 (fine)': { major: 27.0, minor: 24.84, pitch: 2.00, tapDrill: '25.0', clearance: '30.0' },
+            // M30
+            'M30×3.5 (coarse)': { major: 30.0, minor: 26.21, pitch: 3.50, tapDrill: '26.5', clearance: '33.0' },
+            'M30×2 (fine)': { major: 30.0, minor: 27.84, pitch: 2.00, tapDrill: '28.0', clearance: '33.0' },
+            // M33
+            'M33×3.5 (coarse)': { major: 33.0, minor: 29.21, pitch: 3.50, tapDrill: '29.5', clearance: '36.0' },
+            'M33×2 (fine)': { major: 33.0, minor: 30.84, pitch: 2.00, tapDrill: '31.0', clearance: '36.0' },
+            // M36
+            'M36×4 (coarse)': { major: 36.0, minor: 31.67, pitch: 4.00, tapDrill: '32.0', clearance: '39.0' },
+            'M36×3 (fine)': { major: 36.0, minor: 32.75, pitch: 3.00, tapDrill: '33.0', clearance: '39.0' },
+            // M42
+            'M42×4.5 (coarse)': { major: 42.0, minor: 37.13, pitch: 4.50, tapDrill: '37.5', clearance: '45.0' },
+            'M42×3 (fine)': { major: 42.0, minor: 38.75, pitch: 3.00, tapDrill: '39.0', clearance: '45.0' },
+            // M48
+            'M48×5 (coarse)': { major: 48.0, minor: 42.59, pitch: 5.00, tapDrill: '43.0', clearance: '52.0' },
+            'M48×3 (fine)': { major: 48.0, minor: 44.75, pitch: 3.00, tapDrill: '45.0', clearance: '52.0' }
+        };
+
+        const imperialThreads = {
+            // #2
+            '#2-56 UNC': { major: 2.18, minor: 1.63, tpi: 56, tapDrill: '#50 (1.78)', clearance: '#42 (2.37)' },
+            '#2-64 UNF': { major: 2.18, minor: 1.70, tpi: 64, tapDrill: '#50 (1.78)', clearance: '#42 (2.37)' },
+            // #4
+            '#4-40 UNC': { major: 2.84, minor: 2.16, tpi: 40, tapDrill: '#43 (2.26)', clearance: '#31 (3.05)' },
+            '#4-48 UNF': { major: 2.84, minor: 2.27, tpi: 48, tapDrill: '#42 (2.37)', clearance: '#31 (3.05)' },
+            // #5
+            '#5-40 UNC': { major: 3.18, minor: 2.49, tpi: 40, tapDrill: '#38 (2.57)', clearance: '#29 (3.45)' },
+            '#5-44 UNF': { major: 3.18, minor: 2.55, tpi: 44, tapDrill: '#37 (2.64)', clearance: '#29 (3.45)' },
+            // #6
+            '#6-32 UNC': { major: 3.51, minor: 2.74, tpi: 32, tapDrill: '#36 (2.71)', clearance: '#25 (3.80)' },
+            '#6-40 UNF': { major: 3.51, minor: 2.92, tpi: 40, tapDrill: '#33 (2.87)', clearance: '#25 (3.80)' },
+            // #8
+            '#8-32 UNC': { major: 4.17, minor: 3.40, tpi: 32, tapDrill: '#29 (3.45)', clearance: '#17 (4.50)' },
+            '#8-36 UNF': { major: 4.17, minor: 3.51, tpi: 36, tapDrill: '#29 (3.45)', clearance: '#17 (4.50)' },
+            // #10
+            '#10-24 UNC': { major: 4.83, minor: 3.87, tpi: 24, tapDrill: '#25 (3.80)', clearance: '#7 (5.11)' },
+            '#10-32 UNF': { major: 4.83, minor: 4.09, tpi: 32, tapDrill: '#21 (4.04)', clearance: '#7 (5.11)' },
+            // #12
+            '#12-24 UNC': { major: 5.49, minor: 4.50, tpi: 24, tapDrill: '#16 (4.50)', clearance: '#1 (5.79)' },
+            '#12-28 UNF': { major: 5.49, minor: 4.67, tpi: 28, tapDrill: '#14 (4.62)', clearance: '#1 (5.79)' },
+            // 1/4"
+            '1/4-20 UNC': { major: 6.35, minor: 5.19, tpi: 20, tapDrill: '#7 (5.11)', clearance: 'F (6.53)' },
+            '1/4-28 UNF': { major: 6.35, minor: 5.54, tpi: 28, tapDrill: '#3 (5.41)', clearance: 'F (6.53)' },
+            // 5/16"
+            '5/16-18 UNC': { major: 7.94, minor: 6.60, tpi: 18, tapDrill: 'F (6.53)', clearance: '21/64 (8.33)' },
+            '5/16-24 UNF': { major: 7.94, minor: 7.04, tpi: 24, tapDrill: 'I (7.04)', clearance: '21/64 (8.33)' },
+            // 3/8"
+            '3/8-16 UNC': { major: 9.53, minor: 8.00, tpi: 16, tapDrill: '5/16 (7.94)', clearance: '25/64 (9.92)' },
+            '3/8-24 UNF': { major: 9.53, minor: 8.56, tpi: 24, tapDrill: 'Q (8.43)', clearance: '25/64 (9.92)' },
+            // 7/16"
+            '7/16-14 UNC': { major: 11.11, minor: 9.40, tpi: 14, tapDrill: 'U (9.40)', clearance: '29/64 (11.51)' },
+            '7/16-20 UNF': { major: 11.11, minor: 9.93, tpi: 20, tapDrill: '25/64 (9.92)', clearance: '29/64 (11.51)' },
+            // 1/2"
+            '1/2-13 UNC': { major: 12.70, minor: 10.80, tpi: 13, tapDrill: '27/64 (10.72)', clearance: '33/64 (13.10)' },
+            '1/2-20 UNF': { major: 12.70, minor: 11.43, tpi: 20, tapDrill: '29/64 (11.51)', clearance: '33/64 (13.10)' },
+            // 9/16"
+            '9/16-12 UNC': { major: 14.29, minor: 12.19, tpi: 12, tapDrill: '31/64 (12.30)', clearance: '37/64 (14.68)' },
+            '9/16-18 UNF': { major: 14.29, minor: 13.00, tpi: 18, tapDrill: '33/64 (13.10)', clearance: '37/64 (14.68)' },
+            // 5/8"
+            '5/8-11 UNC': { major: 15.88, minor: 13.57, tpi: 11, tapDrill: '17/32 (13.49)', clearance: '41/64 (16.27)' },
+            '5/8-18 UNF': { major: 15.88, minor: 14.58, tpi: 18, tapDrill: '37/64 (14.68)', clearance: '41/64 (16.27)' },
+            // 3/4"
+            '3/4-10 UNC': { major: 19.05, minor: 16.51, tpi: 10, tapDrill: '21/32 (16.67)', clearance: '49/64 (19.45)' },
+            '3/4-16 UNF': { major: 19.05, minor: 17.53, tpi: 16, tapDrill: '11/16 (17.46)', clearance: '49/64 (19.45)' },
+            // 7/8"
+            '7/8-9 UNC': { major: 22.23, minor: 19.45, tpi: 9, tapDrill: '49/64 (19.45)', clearance: '57/64 (22.62)' },
+            '7/8-14 UNF': { major: 22.23, minor: 20.52, tpi: 14, tapDrill: '13/16 (20.64)', clearance: '57/64 (22.62)' },
+            // 1"
+            '1-8 UNC': { major: 25.40, minor: 22.25, tpi: 8, tapDrill: '7/8 (22.23)', clearance: '1-1/64 (25.80)' },
+            '1-12 UNF': { major: 25.40, minor: 23.32, tpi: 12, tapDrill: '59/64 (23.42)', clearance: '1-1/64 (25.80)' },
+            // 1-1/8"
+            '1-1/8-7 UNC': { major: 28.58, minor: 24.97, tpi: 7, tapDrill: '63/64 (25.00)', clearance: '1-5/32 (29.37)' },
+            '1-1/8-12 UNF': { major: 28.58, minor: 26.49, tpi: 12, tapDrill: '1-3/64 (26.59)', clearance: '1-5/32 (29.37)' },
+            // 1-1/4"
+            '1-1/4-7 UNC': { major: 31.75, minor: 28.14, tpi: 7, tapDrill: '1-7/64 (28.18)', clearance: '1-9/32 (32.54)' },
+            '1-1/4-12 UNF': { major: 31.75, minor: 29.67, tpi: 12, tapDrill: '1-11/64 (29.77)', clearance: '1-9/32 (32.54)' }
+        };
+
+        let currentThreadType = 'metric';
+
+        function initThreadReference() {
+            const metricBtn = document.getElementById('threadMetric');
+            const imperialBtn = document.getElementById('threadImperial');
+            const threadSelect = document.getElementById('threadSize');
+
+            metricBtn.addEventListener('click', () => {
+                currentThreadType = 'metric';
+                metricBtn.classList.add('active');
+                imperialBtn.classList.remove('active');
+                populateThreadSelect();
+            });
+
+            imperialBtn.addEventListener('click', () => {
+                currentThreadType = 'imperial';
+                imperialBtn.classList.add('active');
+                metricBtn.classList.remove('active');
+                populateThreadSelect();
+            });
+
+            threadSelect.addEventListener('change', displayThreadInfo);
+
+            populateThreadSelect();
+        }
+
+        function populateThreadSelect() {
+            const select = document.getElementById('threadSize');
+            const threads = currentThreadType === 'metric' ? metricThreads : imperialThreads;
+
+            select.innerHTML = '<option value="">Select a thread size...</option>';
+
+            Object.keys(threads).forEach(size => {
+                const option = document.createElement('option');
+                option.value = size;
+                option.textContent = size;
+                select.appendChild(option);
+            });
+
+            // Clear display
+            clearThreadInfo();
+        }
+
+        function clearThreadInfo() {
+            document.getElementById('threadMajor').textContent = '—';
+            document.getElementById('threadMinor').textContent = '—';
+            document.getElementById('threadPitch').textContent = '—';
+            document.getElementById('threadTPI').textContent = '—';
+            document.getElementById('threadTapDrill').textContent = '—';
+            document.getElementById('threadClearance').textContent = '—';
+        }
+
+        function displayThreadInfo() {
+            const select = document.getElementById('threadSize');
+            const size = select.value;
+
+            if (!size) {
+                clearThreadInfo();
+                return;
+            }
+
+            const threads = currentThreadType === 'metric' ? metricThreads : imperialThreads;
+            const data = threads[size];
+
+            document.getElementById('threadMajor').textContent = data.major.toFixed(2) + ' mm';
+            document.getElementById('threadMinor').textContent = data.minor.toFixed(2) + ' mm';
+
+            if (currentThreadType === 'metric') {
+                document.getElementById('threadPitch').textContent = data.pitch.toFixed(2) + ' mm';
+                document.getElementById('threadTPI').textContent = (25.4 / data.pitch).toFixed(1);
+            } else {
+                document.getElementById('threadPitch').textContent = (25.4 / data.tpi).toFixed(3) + ' mm';
+                document.getElementById('threadTPI').textContent = data.tpi;
+            }
+
+            document.getElementById('threadTapDrill').textContent = data.tapDrill + (currentThreadType === 'metric' ? ' mm' : '');
+            document.getElementById('threadClearance').textContent = data.clearance + (currentThreadType === 'metric' ? ' mm' : '');
+        }
+
+        // Initialize Thread Reference on load
+        document.addEventListener('DOMContentLoaded', initThreadReference);
     </script>
 </body>
 </html>
