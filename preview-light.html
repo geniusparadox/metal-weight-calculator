@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#F4F7F9">
+    <title>Metal Weight Calculator - Light Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-primary: #F4F7F9;
+            --bg-secondary: #EDF1F4;
+            --bg-card: #FFFFFF;
+            --bg-input: #FFFFFF;
+            --text-primary: #4A4E69;
+            --text-secondary: #6B7280;
+            --accent: #7A918D;
+            --accent-hover: #6A817D;
+            --border: #D1D5DB;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 12px;
+            padding-top: calc(50px + env(safe-area-inset-top));
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: var(--text-primary);
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            padding-right: 44px;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .profile-btn {
+            aspect-ratio: 1;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            transition: all 0.2s;
+        }
+
+        .profile-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .profile-btn.active {
+            border-color: var(--accent);
+            background: rgba(122, 145, 141, 0.1);
+        }
+
+        .profile-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-primary);
+            fill: none;
+            stroke-width: 1;
+            margin-bottom: 2px;
+        }
+
+        .profile-btn span {
+            font-size: 9px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .result-card {
+            background: var(--accent);
+            text-align: center;
+            padding: 16px;
+            color: white;
+        }
+
+        .result-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .result-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .result-unit {
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .result-details {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .result-details div {
+            text-align: center;
+        }
+
+        .result-details .label {
+            opacity: 0.8;
+            font-size: 12px;
+        }
+
+        .result-details .value {
+            font-weight: 600;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ Metal Weight Calculator</h1>
+            <p>Calculate weight of metal profiles</p>
+        </header>
+
+        <!-- Profile Selection -->
+        <div class="card">
+            <div class="card-title">Select Profile Shape</div>
+            <div class="profile-grid">
+                <button class="profile-btn active" data-profile="round-bar" title="Round Bar">
+                    <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="12"/></svg>
+                    <span>Round</span>
+                </button>
+                <button class="profile-btn" data-profile="square-bar" title="Square Bar">
+                    <svg viewBox="0 0 40 40"><rect x="8" y="8" width="24" height="24"/></svg>
+                    <span>Square</span>
+                </button>
+                <button class="profile-btn" data-profile="flat-bar" title="Flat Bar">
+                    <svg viewBox="0 0 40 40"><rect x="5" y="14" width="30" height="12"/></svg>
+                    <span>Flat</span>
+                </button>
+                <button class="profile-btn" data-profile="hex-bar" title="Hexagonal Bar">
+                    <svg viewBox="0 0 40 40"><polygon points="20,6 32,13 32,27 20,34 8,27 8,13"/></svg>
+                    <span>Hex</span>
+                </button>
+                <button class="profile-btn" data-profile="round-pipe" title="Round Pipe">
+                    <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14"/><circle cx="20" cy="20" r="8"/></svg>
+                    <span>Pipe</span>
+                </button>
+                <button class="profile-btn" data-profile="square-pipe" title="Square Pipe">
+                    <svg viewBox="0 0 40 40"><rect x="6" y="6" width="28" height="28"/><rect x="12" y="12" width="16" height="16"/></svg>
+                    <span>Sq Pipe</span>
+                </button>
+                <button class="profile-btn" data-profile="rect-pipe" title="Rectangular Pipe">
+                    <svg viewBox="0 0 40 40"><rect x="4" y="10" width="32" height="20"/><rect x="10" y="15" width="20" height="10"/></svg>
+                    <span>Rect Pipe</span>
+                </button>
+                <button class="profile-btn" data-profile="angle" title="Angle Iron">
+                    <svg viewBox="0 0 40 40"><path d="M8,8 L8,32 L32,32 L32,26 L14,26 L14,8 Z"/></svg>
+                    <span>Angle</span>
+                </button>
+                <button class="profile-btn" data-profile="channel" title="Channel">
+                    <svg viewBox="0 0 40 40"><path d="M10,6 L10,34 L30,34 L30,28 L16,28 L16,12 L30,12 L30,6 Z"/></svg>
+                    <span>Channel</span>
+                </button>
+                <button class="profile-btn" data-profile="i-beam" title="I-Beam">
+                    <svg viewBox="0 0 40 40"><path d="M8,6 L32,6 L32,10 L24,10 L24,30 L32,30 L32,34 L8,34 L8,30 L16,30 L16,10 L8,10 Z"/></svg>
+                    <span>I-Beam</span>
+                </button>
+                <button class="profile-btn" data-profile="t-bar" title="T-Bar">
+                    <svg viewBox="0 0 40 40"><path d="M8,8 L32,8 L32,14 L24,14 L24,34 L16,34 L16,14 L8,14 Z"/></svg>
+                    <span>T-Bar</span>
+                </button>
+                <button class="profile-btn" data-profile="sheet" title="Sheet/Plate">
+                    <svg viewBox="0 0 40 40"><rect x="4" y="16" width="32" height="8"/></svg>
+                    <span>Sheet</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Material Selection -->
+        <div class="card">
+            <div class="card-title">Material</div>
+            <div class="form-group">
+                <select id="material">
+                    <optgroup label="Steel">
+                        <option value="7850" selected>Carbon Steel (7850 kg/m³)</option>
+                        <option value="7930">Stainless Steel 304 (7930 kg/m³)</option>
+                    </optgroup>
+                    <optgroup label="Aluminum">
+                        <option value="2700">Aluminum (Pure) (2700 kg/m³)</option>
+                    </optgroup>
+                    <optgroup label="Copper & Alloys">
+                        <option value="8960">Copper (8960 kg/m³)</option>
+                        <option value="8530">Brass (8530 kg/m³)</option>
+                    </optgroup>
+                </select>
+            </div>
+        </div>
+
+        <!-- Dimensions -->
+        <div class="card">
+            <div class="card-title">Dimensions (mm)</div>
+            <div class="input-row">
+                <div class="form-group">
+                    <label>Diameter (D)</label>
+                    <input type="number" placeholder="25">
+                </div>
+                <div class="form-group">
+                    <label>Length (L)</label>
+                    <input type="number" placeholder="1000">
+                </div>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div class="card result-card">
+            <div class="result-label">Total Weight</div>
+            <div class="result-value">3.85 <span class="result-unit">kg</span></div>
+            <div class="result-details">
+                <div>
+                    <div class="label">Per Meter</div>
+                    <div class="value">3.85 kg/m</div>
+                </div>
+                <div>
+                    <div class="label">Volume</div>
+                    <div class="value">490.87 cm³</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build
+www/
+dist/
+
+# iOS/macOS
+.DS_Store
+*.xcworkspace
+xcuserdata/
+
+# Debug
+*.log
+
+# Environment
+.env*
